@@ -5,10 +5,11 @@
     </div>
 
     <div class="BarraInfo">
-      <div><h2>Jugador 1</h2></div>
+      <div><h2>jugador 1</h2></div>
       <div></div>
       <div><h2>Jugador 2</h2></div>
     </div>
+
     <div class="BarraInfo2">
       <div>
         <q-btn color="white" @click="Batallar" text-color="black" label="Buscar pokémons" class="BTN1"/>
@@ -53,13 +54,17 @@
         </div>
       </div>
 
-      <div><q-btn color="black" label="Batallar" class="BTN2" @click="PelearPokemons" /></div>
+      <div>
+        <q-btn color="black" label="Batallar" class="BTN2" @click="BotonBatalla" />
+      </div>
     </div>
+
     <div class="BarraInfo3">
       <div> <h2>{{ nombre }}</h2></div>
       <div></div>
       <div> <h2>{{ nombre2 }}</h2></div>
     </div>
+
     <div class="nudo">
       <div class="ContenedorBatalla">
         <div class="BarraLateral"></div>
@@ -70,7 +75,7 @@
           </div>
         </div>
 
-    <div></div>
+        <div></div>
 
         <div class="Carta2">
           <div class="poke2">
@@ -82,41 +87,105 @@
     </div>
 
     <div class="desenlace">
-      <h1>{{ resultadoBatalla }}</h1>
+      <div><h3>{{ EscojerEstadistica1 }}</h3></div>
+      <div></div>
+      <div><h3>{{ EscojerEstadistica2 }}</h3></div>
+    </div>
+
+    <div class="resultado">
+      <h2>{{ resultado }}</h2>
     </div>
 
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
+let select = ref("");
 let nombre = ref("");
 let Imagen = ref("");
-let Peso = ref("");
-let Altura = ref("");
 let Ataque = ref(0);
 let Defensa = ref(0);
 let Velocidad = ref(0);
 let HP = ref(0);
+let EscojerEstadistica1 = ref(0);
 
 let nombre2 = ref("");
 let Imagen2 = ref("");
-let Peso2 = ref("");
-let Altura2 = ref("");
 let Ataque2 = ref(0);
 let Defensa2 = ref(0);
 let Velocidad2 = ref(0);
 let HP2 = ref(0);
+let EscojerEstadistica2 = ref(0);
 
-let estadisticaJugador1 = ref("");
-let estadisticaJugador2 = ref("");
+let resultado = ref("");
 
 
+onMounted(() => {
+  Swal.fire({
+    title: 'Colocar nombre de usuario',
+    input: 'text',
+    confirmButtonText: 'Aceptar',
+    allowOutsideClick: false,
+    preConfirm: (nombreUsuario) => {
+      if (!nombreUsuario || nombreUsuario.trim() === "") {
+        Swal.showValidationMessage('Por favor, ingrese su nombre de usuario');
+        return false;
+      }
+      return nombreUsuario; 
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      nombre.value = result.value; 
+      Swal.fire({
+        title: 'Seleccionar número de rondas',
+        input: 'select',
+        inputOptions: {
+          3: 'Partida a 3 rondas',
+          5: 'Partida a 5 rondas',
+          7: 'Partida a 7 rondas'
+        },
+        inputPlaceholder: 'Selecciona el número de rondas',
+        confirmButtonText: 'Aceptar',
+        allowOutsideClick: false,
+        preConfirm: (rondas) => {
+          if (!rondas) {
+            Swal.showValidationMessage('Por favor, seleccione el número de rondas');
+            return false;
+          }
+          return rondas;
+        }
+      }).then((roundResult) => {
+        if (roundResult.isConfirmed) {
+          console.log('Número de rondas seleccionadas:', roundResult.value); // Aquí puedes usar el número de rondas
+        }
+      });
+    }
+  });
+});
 
-let select = ref("");
-let resultadoBatalla = ref("");
+
+function onItemClick(estadistica) {
+  if (estadistica === 'Ataque') {
+    EscojerEstadistica1.value = Ataque.value;
+    EscojerEstadistica2.value = Ataque2.value;
+  } else if (estadistica === 'Defensa') {
+    EscojerEstadistica1.value = Defensa.value;
+    EscojerEstadistica2.value = Defensa2.value;
+  } else if (estadistica === 'Velocidad') {
+    EscojerEstadistica1.value = Velocidad.value;
+    EscojerEstadistica2.value = Velocidad2.value;
+  } else if (estadistica === 'HP') {
+    EscojerEstadistica1.value = HP.value;
+    EscojerEstadistica2.value = HP2.value;
+  } else if (estadistica === 'Promedio') {
+    EscojerEstadistica1.value = (Ataque.value + Defensa.value + Velocidad.value + HP.value) / 4;
+    EscojerEstadistica2.value = (Ataque2.value + Defensa2.value + Velocidad2.value + HP2.value) / 4;
+  }
+}
 
 function obtenerPokemonAleatorio() {
   return Math.floor(Math.random() * 898) + 1;
@@ -127,8 +196,6 @@ async function AlaBatalla(pokemonId) {
   try {
     let { data } = await axios.get(url);
     Imagen.value = data.sprites.back_default;
-    Peso.value = data.weight / 10;
-    Altura.value = data.height / 10;
     Ataque.value = data.stats[1].base_stat;
     Defensa.value = data.stats[2].base_stat;
     Velocidad.value = data.stats[5].base_stat;
@@ -144,8 +211,6 @@ async function AlaBatalla2(pokemonId) {
   try {
     let { data } = await axios.get(url);
     Imagen2.value = data.sprites.front_default;
-    Peso2.value = data.weight / 10;
-    Altura2.value = data.height / 10;
     Ataque2.value = data.stats[1].base_stat;
     Defensa2.value = data.stats[2].base_stat;
     Velocidad2.value = data.stats[5].base_stat;
@@ -164,70 +229,28 @@ async function Batallar() {
   await AlaBatalla2(pokemonId2);
 }
 
-function onItemClick(opcion) {
-  select.value = opcion; // 
-}
-
-function mostrarEstadistica(jugador) {
-  let estadistica;
-  if (select.value === 'Ataque') {
-    estadistica = jugador === 1 ? Ataque.value : Ataque2.value;
-  } else if (select.value === 'Defensa') {
-    estadistica = jugador === 1 ? Defensa.value : Defensa2.value;
-  } else if (select.value === 'Velocidad') {
-    estadistica = jugador === 1 ? Velocidad.value : Velocidad2.value;
-  } else if (select.value === 'HP') {
-    estadistica = jugador === 1 ? HP.value : HP2.value;
-  } else if (select.value === 'Promedio') {
-    let promedio1 = (Ataque.value + Defensa.value + Velocidad.value + HP.value) / 4;
-    let promedio2 = (Ataque2.value + Defensa2.value + Velocidad2.value + HP2.value) / 4;
-    estadistica = jugador === 1 ? promedio1 : promedio2;
-  }
-
-  if (jugador === 1) {
-    estadisticaJugador1.value = estadistica;
+function BotonBatalla() {
+  if (EscojerEstadistica1.value > EscojerEstadistica2.value) {
+    resultado.value = "Jugador 1 ganó";
+  } else if (EscojerEstadistica1.value < EscojerEstadistica2.value) {
+    resultado.value = "Jugador 2 ganó";
   } else {
-    estadisticaJugador2.value = estadistica;
+    resultado.value = "Es un empate";
   }
-
-  return estadistica;
 }
-
-
-function PelearPokemons() {
-  let resultado = '';
-  
-  if (select.value === 'Ataque') 
-  {
-    resultado = Ataque.value > Ataque2.value ? 'Jugador 1 gana por Ataque' : 'Jugador 2 gana por Ataque';
-  } else if (select.value === 'Defensa') 
-  {
-    resultado = Defensa.value > Defensa2.value ? 'Jugador 1 gana por Defensa' : 'Jugador 2 gana por Defensa';
-  } else if (select.value === 'Velocidad') 
-  {
-    resultado = Velocidad.value > Velocidad2.value ? 'Jugador 1 gana por Velocidad' : 'Jugador 2 gana por Velocidad';
-  } else if (select.value === 'HP') 
-  {
-    resultado = HP.value > HP2.value ? 'Jugador 1 gana por HP' : 'Jugador 2 gana por HP';
-  } else if (select.value === 'Promedio') 
-  {
-    let promedio1 = (Ataque.value + Defensa.value + Velocidad.value + HP.value) / 4;
-    let promedio2 = (Ataque2.value + Defensa2.value + Velocidad2.value + HP2.value) / 4;
-    resultado = promedio1 > promedio2 ? 'Jugador 1 gana por Promedio' : 'Jugador 2 gana por Promedio';
-  }
-
-  resultadoBatalla.value = resultado;
-}
-
-
-
 </script>
+
 
 <style>
 * {
   margin: 0;
   padding: 0;
 }
+.swal2-container {
+  z-index: 9999 !important;
+}
+
+
 .ContenedorPincipal {
   background-size: cover;
   text-align: center;
@@ -237,7 +260,7 @@ function PelearPokemons() {
   grid-template-columns: 33% 34% 33%;
 }
 .ContenedorBatalla {
-  height: 350px;
+  height: 400px;
   display: grid;
   grid-template-columns: 20% 25% 10% 25% 20%;
   background-image: url(https://i.pinimg.com/736x/db/5b/60/db5b60edc072e5671fde8d7a55b39f62.jpg);
@@ -264,19 +287,23 @@ text-align: center;
   margin-top: 5%;
 }
 .img1{
-  width: 100%;
+  width: 115%;
   height: auto;
-  margin-left: -50%;
+  margin-left: -40%;
 }
 .img2{
-  width: 50%;
+  width: 70%;
   height: auto;
-  margin-left: 50%;
-  margin-top: 15%;
+  margin-top: 25%;
 }
 .BarraInfo3 {
   display: grid;
   grid-template-columns: 33% 34% 33%;
+}
+.desenlace{
+  display: grid;
+  grid-template-columns: 33% 34% 33%;
+  text-align: center;
 }
 
 </style>
