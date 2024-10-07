@@ -5,9 +5,9 @@
     </div>
 
     <div class="BarraInfo">
-      <div><h2>jugador 1</h2></div>
+      <div><h2>{{ NombreUsuario }}</h2></div>
       <div></div>
-      <div><h2>Jugador 2</h2></div>
+      <div><h2>Bot 2</h2></div>
     </div>
 
     <div class="BarraInfo2">
@@ -93,8 +93,14 @@
     </div>
 
     <div class="resultado">
-      <h2>{{ resultado }}</h2>
+      <div><h2>{{ resultado }}</h2></div>
+      <div class="ContadorBatallas">
+        <div>{{ ResultadoPartida }}</div>
+        <div></div>
+        <div>{{ ResultadoPartida2 }}</div>
+      </div>
     </div>
+    <div><h2>{{ Ganador }}</h2></div>
 
   </div>
 </template>
@@ -112,6 +118,7 @@ let Defensa = ref(0);
 let Velocidad = ref(0);
 let HP = ref(0);
 let EscojerEstadistica1 = ref(0);
+let ResultadoPartida = ref(0);
 
 let nombre2 = ref("");
 let Imagen2 = ref("");
@@ -120,9 +127,31 @@ let Defensa2 = ref(0);
 let Velocidad2 = ref(0);
 let HP2 = ref(0);
 let EscojerEstadistica2 = ref(0);
+let ResultadoPartida2 = ref(0);
 
 let resultado = ref("");
+let Ganador = ref("");
+let NombreUsuario = ref("");
+let NumeroDeRondas = ref(3); 
 
+function LlevarCuentasBatallas() {
+  if (resultado.value === "Jugador 1 ganó") {
+    ResultadoPartida.value += 1;
+  } else if (resultado.value === "Jugador 2 ganó") {
+    ResultadoPartida2.value += 1;
+  } else if (resultado.value === "Es un empate") {
+    ResultadoPartida.value += 1;
+    ResultadoPartida2.value += 1;
+  }
+}
+
+function DefiniGanador() {
+  if (ResultadoPartida.value == NumeroDeRondas.value) {
+    Ganador.value = `${nombre.value} ha ganado la batalla`; 
+  } else if (ResultadoPartida2.value == NumeroDeRondas.value) {
+    Ganador.value = `${nombre2.value} ha ganado la batalla`; 
+  }
+}
 
 onMounted(() => {
   Swal.fire({
@@ -130,16 +159,16 @@ onMounted(() => {
     input: 'text',
     confirmButtonText: 'Aceptar',
     allowOutsideClick: false,
-    preConfirm: (nombreUsuario) => {
-      if (!nombreUsuario || nombreUsuario.trim() === "") {
+    preConfirm: (userName) => {
+      if (!userName || userName.trim() === "") {
         Swal.showValidationMessage('Por favor, ingrese su nombre de usuario');
         return false;
       }
-      return nombreUsuario; 
+      return userName;
     }
   }).then((result) => {
     if (result.isConfirmed) {
-      nombre.value = result.value; 
+      NombreUsuario.value = result.value;
       Swal.fire({
         title: 'Seleccionar número de rondas',
         input: 'select',
@@ -160,13 +189,13 @@ onMounted(() => {
         }
       }).then((roundResult) => {
         if (roundResult.isConfirmed) {
-          console.log('Número de rondas seleccionadas:', roundResult.value); // Aquí puedes usar el número de rondas
+          NumeroDeRondas.value = roundResult.value; // Aquí almacenamos el número de rondas
+          console.log('Número de rondas seleccionadas:', NumeroDeRondas.value);
         }
       });
     }
   });
 });
-
 
 function onItemClick(estadistica) {
   if (estadistica === 'Ataque') {
@@ -224,9 +253,7 @@ async function AlaBatalla2(pokemonId) {
 async function Batallar() {
   let pokemonId1 = obtenerPokemonAleatorio();
   let pokemonId2 = obtenerPokemonAleatorio();
-
-  await AlaBatalla(pokemonId1);
-  await AlaBatalla2(pokemonId2);
+  await Promise.all([AlaBatalla(pokemonId1), AlaBatalla2(pokemonId2)]);
 }
 
 function BotonBatalla() {
@@ -237,9 +264,10 @@ function BotonBatalla() {
   } else {
     resultado.value = "Es un empate";
   }
+  LlevarCuentasBatallas();
+  DefiniGanador();
 }
 </script>
-
 
 <style>
 * {
@@ -248,6 +276,10 @@ function BotonBatalla() {
 }
 .swal2-container {
   z-index: 9999 !important;
+}
+.ContadorBatallas{
+  display: grid;
+  grid-template-columns: 33% 34% 33%;
 }
 
 
@@ -263,7 +295,7 @@ function BotonBatalla() {
   height: 400px;
   display: grid;
   grid-template-columns: 20% 25% 10% 25% 20%;
-  background-image: url(https://i.pinimg.com/736x/db/5b/60/db5b60edc072e5671fde8d7a55b39f62.jpg);
+  background-image: url(https://i.pinimg.com/564x/0d/0f/0c/0d0f0c384be14928fd4dcb6ca7f0e6b5.jpg);
   background-size: 100% 100%;
   width: 90%;
   margin-left: 5%;
