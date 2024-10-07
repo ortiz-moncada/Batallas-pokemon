@@ -372,7 +372,7 @@ h3 {
   display: grid;
   grid-template-columns: 20% 25% 10% 25% 20%;
   background-image: url(https://i.pinimg.com/564x/0d/0f/0c/0d0f0c384be14928fd4dcb6ca7f0e6b5.jpg);
-  background-size: cover;
+  background-size: 100% 100%;
   width: 90%;
   margin-left: 5%;
   border: 5px solid black;
@@ -396,14 +396,15 @@ h3 {
 
 
 .img1 {
-  width: 200px;
-  height: 200px;
-  margin-top: 38%;
+  width: 300px;
+  height: 300px;
+  margin-top: 30%;
 }
 
 .img2 {
-  max-width: 200px;
-  margin-top: 38%;
+  width: 200px;
+  height: 200px;
+  margin-top: 25%;
 }
 
 .desenlace {
@@ -419,9 +420,7 @@ h3 {
   align-items: center;
   margin-top: 20px;
 }
-.q-btn q-btn-item non-selectable no-outline q-btn--standard q-btn--rectangle bg-white text-black q-btn--actionable q-focusable q-hoverable BTN1{
 
-}
 
 .ContadorBatallas {
   display: grid;
