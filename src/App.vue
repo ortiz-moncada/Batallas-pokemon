@@ -273,69 +273,201 @@ function BotonBatalla() {
 * {
   margin: 0;
   padding: 0;
-}
-.swal2-container {
-  z-index: 9999 !important;
-}
-.ContadorBatallas{
-  display: grid;
-  grid-template-columns: 33% 34% 33%;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
+body {
+  background-color: #f0f4f8;
+  color: #333;
+}
 
 .ContenedorPincipal {
   background-size: cover;
   text-align: center;
+  padding: 20px;
 }
+
+h1, h2, h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: #007bff;
+}
+
+h2 {
+  font-size: 1.8rem;
+}
+
+h3 {
+  font-size: 1.4rem;
+}
+
 .BarraInfo {
   display: grid;
-  grid-template-columns: 33% 34% 33%;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-top: 20px;
+  padding: 10px 0;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
+
+.BarraInfo div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.BarraInfo2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.BarraInfo2 div {
+  display: flex;
+  justify-content: center;
+}
+
+.BarraDP {
+  text-align: center;
+}
+
+.BTN1, .BTN2 {
+  width: 200px;
+  height: 50px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 25px;
+  margin: 10px 0;
+}
+
+.BTN1 {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.BTN2 {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.BarraInfo3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-top: 20px;
+}
+
+.nudo {
+  margin-top: 40px;
+}
+
 .ContenedorBatalla {
   height: 400px;
   display: grid;
   grid-template-columns: 20% 25% 10% 25% 20%;
   background-image: url(https://i.pinimg.com/564x/0d/0f/0c/0d0f0c384be14928fd4dcb6ca7f0e6b5.jpg);
-  background-size: 100% 100%;
+  background-size: cover;
   width: 90%;
   margin-left: 5%;
   border: 5px solid black;
-  border-radius:10px ;
+  border-radius: 15px;
+  padding: 10px;
+  position: relative;
 }
-.BarraInfo2 {
+
+.poke1, .poke2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.poke1 h5, .poke2 h5 {
+  margin-top: 10px;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+
+.img1 {
+  width: 200px;
+  height: 200px;
+  margin-top: 38%;
+}
+
+.img2 {
+  max-width: 200px;
+  margin-top: 38%;
+}
+
+.desenlace {
   display: grid;
-  grid-template-columns: 33% 34% 33%;
-  
-}
-.BarraInfo {
- 
+  grid-template-columns: 1fr 1fr 1fr;
   text-align: center;
+  margin-top: 30px;
 }
-.BarraInfo3 {
-text-align: center;
+
+.resultado {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }
-.BTN1, .BTN2, .BarraDP {
-  margin-left: 30%;
-  margin-top: 5%;
+.q-btn q-btn-item non-selectable no-outline q-btn--standard q-btn--rectangle bg-white text-black q-btn--actionable q-focusable q-hoverable BTN1{
+
 }
-.img1{
-  width: 115%;
-  height: auto;
-  margin-left: -40%;
-}
-.img2{
-  width: 70%;
-  height: auto;
-  margin-top: 25%;
-}
-.BarraInfo3 {
+
+.ContadorBatallas {
   display: grid;
-  grid-template-columns: 33% 34% 33%;
-}
-.desenlace{
-  display: grid;
-  grid-template-columns: 33% 34% 33%;
+  grid-template-columns: 1fr 1fr 1fr;
   text-align: center;
+  margin-top: 20px;
 }
+
+.ContadorBatallas div {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.BarraLateral {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+h2, h3 {
+  color: #007bff;
+}
+
+h2.resultado {
+  color: #dc3545;
+}
+
+h3 {
+  color: #28a745;
+}
+
+.swal2-container {
+  z-index: 9999 !important;
+}
+
+
+.q-btn {
+  border-radius: 26px !important;
+  height: 70px;
+
+}
+
+.q-btn-dropdown {
+  width: 200px;
+  font-size: 1.1rem;
+}
+
+
 
 </style>
