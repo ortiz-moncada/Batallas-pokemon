@@ -1,12 +1,12 @@
 <template>
   <div class="ContenedorPincipal">
     <div class="inicio">
-      <h1>Batallas Pokémon</h1>
+      <img src="https://images.wikidexcdn.net/mwuploads/wikidex/8/81/latest/20130115162833/Novena_temporada.png" class="title">
     </div>
 
     <div class="BarraInfo">
       <div><h2>{{ NombreUsuario }}</h2></div>
-      <div> <h1>V/S</h1></div>
+      <div><h2>V/S</h2></div>
       <div><h2>Bot 2</h2></div>
     </div>
 
@@ -358,21 +358,21 @@ body {
   color: #333;
   max-width: 100%;
 }
+.h2{
+  color: #333;
+}
 
 .ContenedorPincipal {
   background-size: cover;
   text-align: center;
   padding: 20px;
+  background-image: url(https://i.pinimg.com/736x/b6/40/c5/b640c58cfb5968c64b87c0334565a9fa.jpg);
+  background-size: cover;
 }
 
-
-h1 {
-  font-size: 2.5rem;
-  color: #007bff;
-}
 
 h2 {
-  font-size: 1.8rem;
+  font-size: 2rem;
 }
 
 h3 {
@@ -385,9 +385,10 @@ h3 {
   height: 90px;
   margin-top: 20px;
   padding: 10px 0;
-  background-color: #ffffff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  background: rgb(140,104,19);
+  background: linear-gradient(0deg, rgba(140,104,19,1) 33%, rgba(255,252,14,1) 71%);
+  border: 5px solid rgb(0, 0, 0);
+  border-radius: 5px;
 }
 
 
@@ -519,17 +520,12 @@ h3 {
   margin-top: 20px;
 }
 
-h3 {
-  color: #007bff;
-}
+
 
 h2.resultado {
   color: #dc3545;
 }
 
-h3 {
-  color: #28a745;
-}
 
 .swal2-container {
   z-index: 9999 !important;
