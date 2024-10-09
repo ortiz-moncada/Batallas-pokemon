@@ -6,45 +6,45 @@
 
     <div class="BarraInfo">
       <div><h2>{{ NombreUsuario }}</h2></div>
-      <div></div>
+      <div> <h1>V/S</h1></div>
       <div><h2>Bot 2</h2></div>
     </div>
 
     <div class="BarraInfo2">
       <div>
-        <q-btn color="white" @click="Batallar" text-color="black" label="Buscar pokémons" class="BTN1"/>
+        <q-btn color="white" @click="Batallar" text-color="black" label="Buscar pokémons" class="BTN1" />
         <div class="q-pa-md"></div>
       </div>
 
       <div class="BarraDP"> 
         <div class="q-pa-md">
-          <q-btn-dropdown color="primary" label="Seleccionar por" v-model="select">
+          <q-btn-dropdown color="primary" label="Seleccionar por" v-model="select" class="ElSelec" :disable="!pokemonsBuscados">
             <q-list>
-              <q-item clickable v-close-popup @click="onItemClick('Ataque')">
+              <q-item clickable v-close-popup @click="handleItemClick('Ataque')">
                 <q-item-section>
                   <q-item-label>Ataque</q-item-label>
                 </q-item-section>
               </q-item>
 
-              <q-item clickable v-close-popup @click="onItemClick('Defensa')">
+              <q-item clickable v-close-popup @click="handleItemClick('Defensa')">
                 <q-item-section>
                   <q-item-label>Defensa</q-item-label>
                 </q-item-section>
               </q-item>
 
-              <q-item clickable v-close-popup @click="onItemClick('Velocidad')">
+              <q-item clickable v-close-popup @click="handleItemClick('Velocidad')">
                 <q-item-section>
                   <q-item-label>Velocidad</q-item-label>
                 </q-item-section>
               </q-item>
 
-              <q-item clickable v-close-popup @click="onItemClick('HP')">
+              <q-item clickable v-close-popup @click="handleItemClick('HP')">
                 <q-item-section>
                   <q-item-label>HP</q-item-label>
                 </q-item-section>
               </q-item>
 
-              <q-item clickable v-close-popup @click="onItemClick('Promedio')">
+              <q-item clickable v-close-popup @click="handleItemClick('Promedio')">
                 <q-item-section>
                   <q-item-label>Promedio</q-item-label>
                 </q-item-section>
@@ -55,52 +55,55 @@
       </div>
 
       <div>
-        <q-btn color="black" label="Batallar" class="BTN2" @click="BotonBatalla" />
+        <q-btn color="black" label="Batallar" class="BTN2" @click="BotonBatalla" :disable="!pokemonsBuscados2" />
       </div>
     </div>
 
     <div class="BarraInfo3">
-      <div> <h2>{{ nombre }}</h2></div>
-      <div></div>
-      <div> <h2>{{ nombre2 }}</h2></div>
-    </div>
-
-    <div class="nudo">
-      <div class="ContenedorBatalla">
-        <div class="BarraLateral"></div>
-        <div class="Carta1">
-          <div class="poke1">
-            <img :src="Imagen" alt="" class="img1">
-            <h5></h5>
-          </div>
-        </div>
-
-        <div></div>
-
-        <div class="Carta2">
-          <div class="poke2">
-            <img :src="Imagen2" alt="" class="img2">
-            <h5></h5>
-          </div>
+      <div><h2>{{ nombre }}</h2></div>
+      <div>
+        <div class="ContadorBatallas">
+          <div>{{ ResultadoPartida }}</div>
+          <div></div>
+          <div>{{ ResultadoPartida2 }}</div>
         </div>
       </div>
+      <div><h2>{{ nombre2 }}</h2></div>
     </div>
-
+    
     <div class="desenlace">
       <div><h3>{{ EscojerEstadistica1 }}</h3></div>
       <div></div>
       <div><h3>{{ EscojerEstadistica2 }}</h3></div>
     </div>
 
-    <div class="resultado">
-      <div><h2>{{ resultado }}</h2></div>
-      <div class="ContadorBatallas">
-        <div>{{ ResultadoPartida }}</div>
-        <div></div>
-        <div>{{ ResultadoPartida2 }}</div>
+    <div class="nudo">
+      <div class="ContenedorBatalla">
+        <div class="BarraLateral"></div>
+
+        <div class="Carta1">
+          <div class="poke1">
+            <img :src="Imagen" class="img1">
+            <h5></h5>
+          </div>
+        </div>
+
+        <div>
+          <img :src="LaIMG" class="imgI">
+        </div>
+
+        <div class="Carta2">
+          <div class="poke2">
+            <img :src="Imagen2" class="img2">
+            <h5></h5>
+          </div>
+        </div>
       </div>
     </div>
-    <div><h2>{{ Ganador }}</h2></div>
+
+    <div class="resultado">
+      <div><h2>{{ resultado }}</h2></div>
+    </div>
 
   </div>
 </template>
@@ -110,7 +113,7 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-let select = ref("");
+let pokemonsBuscados = ref(false);  
 let nombre = ref("");
 let Imagen = ref("");
 let Ataque = ref(0);
@@ -120,6 +123,7 @@ let HP = ref(0);
 let EscojerEstadistica1 = ref(0);
 let ResultadoPartida = ref(0);
 
+let pokemonsBuscados2 = ref(false); 
 let nombre2 = ref("");
 let Imagen2 = ref("");
 let Ataque2 = ref(0);
@@ -129,75 +133,36 @@ let HP2 = ref(0);
 let EscojerEstadistica2 = ref(0);
 let ResultadoPartida2 = ref(0);
 
+let select = ref("");
 let resultado = ref("");
-let Ganador = ref("");
 let NombreUsuario = ref("");
 let NumeroDeRondas = ref(3); 
 
-function LlevarCuentasBatallas() {
-  if (resultado.value === "Jugador 1 ganó") {
-    ResultadoPartida.value += 1;
-  } else if (resultado.value === "Jugador 2 ganó") {
-    ResultadoPartida2.value += 1;
-  } else if (resultado.value === "Es un empate") {
-    ResultadoPartida.value += 1;
-    ResultadoPartida2.value += 1;
+let LaIMG = ref("");
+let ImgA = ref("https://cdn-icons-png.flaticon.com/128/1183/1183803.png");
+let ImgD = ref("https://cdn-icons-png.flaticon.com/128/4046/4046176.png");
+let ImgV = ref("https://cdn-icons-png.flaticon.com/128/252/252590.png");
+let ImgH = ref("https://cdn-icons-png.flaticon.com/128/185/185954.png");
+let ImgP = ref("https://cdn-icons-png.flaticon.com/128/1306/1306123.png");
+
+function JuegoIconos() {
+  if (select.value === 'Ataque') {
+    LaIMG.value = ImgA.value;  
+  } else if (select.value === 'Defensa') {
+    LaIMG.value = ImgD.value;
+  } else if (select.value === 'Velocidad') {
+    LaIMG.value = ImgV.value;
+  } else if (select.value === 'HP') {
+    LaIMG.value = ImgH.value;
+  } else if (select.value === 'Promedio') {
+    LaIMG.value = ImgP.value;
   }
 }
 
-function DefiniGanador() {
-  if (ResultadoPartida.value == NumeroDeRondas.value) {
-    Ganador.value = `${nombre.value} ha ganado la batalla`; 
-  } else if (ResultadoPartida2.value == NumeroDeRondas.value) {
-    Ganador.value = `${nombre2.value} ha ganado la batalla`; 
-  }
-}
+function handleItemClick(estadistica) {
+  select.value = estadistica;
+  JuegoIconos(); 
 
-onMounted(() => {
-  Swal.fire({
-    title: 'Colocar nombre de usuario',
-    input: 'text',
-    confirmButtonText: 'Aceptar',
-    allowOutsideClick: false,
-    preConfirm: (userName) => {
-      if (!userName || userName.trim() === "") {
-        Swal.showValidationMessage('Por favor, ingrese su nombre de usuario');
-        return false;
-      }
-      return userName;
-    }
-  }).then((result) => {
-    if (result.isConfirmed) {
-      NombreUsuario.value = result.value;
-      Swal.fire({
-        title: 'Seleccionar número de rondas',
-        input: 'select',
-        inputOptions: {
-          3: 'Partida a 3 rondas',
-          5: 'Partida a 5 rondas',
-          7: 'Partida a 7 rondas'
-        },
-        inputPlaceholder: 'Selecciona el número de rondas',
-        confirmButtonText: 'Aceptar',
-        allowOutsideClick: false,
-        preConfirm: (rondas) => {
-          if (!rondas) {
-            Swal.showValidationMessage('Por favor, seleccione el número de rondas');
-            return false;
-          }
-          return rondas;
-        }
-      }).then((roundResult) => {
-        if (roundResult.isConfirmed) {
-          NumeroDeRondas.value = roundResult.value; // Aquí almacenamos el número de rondas
-          console.log('Número de rondas seleccionadas:', NumeroDeRondas.value);
-        }
-      });
-    }
-  });
-});
-
-function onItemClick(estadistica) {
   if (estadistica === 'Ataque') {
     EscojerEstadistica1.value = Ataque.value;
     EscojerEstadistica2.value = Ataque2.value;
@@ -214,6 +179,38 @@ function onItemClick(estadistica) {
     EscojerEstadistica1.value = (Ataque.value + Defensa.value + Velocidad.value + HP.value) / 4;
     EscojerEstadistica2.value = (Ataque2.value + Defensa2.value + Velocidad2.value + HP2.value) / 4;
   }
+  pokemonsBuscados2.value = true;
+}
+
+function LlevarCuentasBatallas() {
+  if (resultado.value === "Jugador 1 ganó") {
+    ResultadoPartida.value += 1;
+  } else if (resultado.value === "Jugador 2 ganó") {
+    ResultadoPartida2.value += 1;
+  } else if (resultado.value === "Es un empate") {
+    ResultadoPartida.value += 1;
+    ResultadoPartida2.value += 1;
+  }
+}
+
+function DefiniGanador() {
+  if (ResultadoPartida.value == NumeroDeRondas.value) {
+    Swal.fire({
+      title: '¡Ganador!',
+      text: `${nombre.value} ha ganado la batalla`, 
+      confirmButtonText: 'Aceptar'
+      
+    })
+    reiniciarJuego();;
+  } else if (ResultadoPartida2.value == NumeroDeRondas.value) {
+    Swal.fire({
+      title: '¡Ganador!',
+      text: `${nombre2.value} ha ganado la batalla`, 
+      confirmButtonText: 'Aceptar'
+    })
+    reiniciarJuego();;
+  }
+
 }
 
 function obtenerPokemonAleatorio() {
@@ -254,6 +251,8 @@ async function Batallar() {
   let pokemonId1 = obtenerPokemonAleatorio();
   let pokemonId2 = obtenerPokemonAleatorio();
   await Promise.all([AlaBatalla(pokemonId1), AlaBatalla2(pokemonId2)]);
+  
+  pokemonsBuscados.value = true; 
 }
 
 function BotonBatalla() {
@@ -266,8 +265,85 @@ function BotonBatalla() {
   }
   LlevarCuentasBatallas();
   DefiniGanador();
+ 
+
+  if (select.value) {
+    JuegoIconos();
+  }
 }
+
+onMounted(() => {
+  Swal.fire({
+    title: 'Colocar nombre de usuario',
+    input: 'text',
+    confirmButtonText: 'Aceptar',
+    allowOutsideClick: false,
+    preConfirm: (userName) => {
+      if (!userName || userName.trim() === "") {
+        Swal.showValidationMessage('Por favor, ingrese su nombre de usuario');
+        return false;
+      }
+      return userName;
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      NombreUsuario.value = result.value;
+      Swal.fire({
+        title: 'Seleccionar número de rondas',
+        input: 'select',
+        inputOptions: {
+          3: 'Partida a 3 rondas',
+          5: 'Partida a 5 rondas',
+          7: 'Partida a 7 rondas'
+        },
+        inputPlaceholder: 'Selecciona el número de rondas',
+        confirmButtonText: 'Aceptar',
+        allowOutsideClick: false,
+        preConfirm: (rondas) => {
+          if (!rondas) {
+            Swal.showValidationMessage('Por favor, seleccione el número de rondas');
+            return false;
+          }
+          return rondas;
+        }
+      }).then((roundResult) => {
+        if (roundResult.isConfirmed) {
+          NumeroDeRondas.value = roundResult.value;
+          console.log('Número de rondas seleccionadas:', NumeroDeRondas.value);
+        }
+      });
+    }
+  });
+});
+
+function reiniciarJuego() {
+  // Restablecer todas las variables a su estado inicial
+  NombreUsuario.value = "";
+  NumeroDeRondas.value = 3; // O el valor que necesites
+  ResultadoPartida.value = 0;
+  ResultadoPartida2.value = 0;
+  EscojerEstadistica1.value = 0;
+  EscojerEstadistica2.value = 0;
+  pokemonsBuscados.value = false;
+  pokemonsBuscados2.value = false;
+  resultado.value = "";
+  select.value = "";
+  Imagen.value = "";
+  Imagen2.value = "";
+  Ataque.value = 0;
+  Defensa.value = 0;
+  Velocidad.value = 0;
+  HP.value = 0;
+  Ataque2.value = 0;
+  Defensa2.value = 0;
+  Velocidad2.value = 0;
+  HP2.value = 0;
+  LaIMG.value = "";
+}
+
+
 </script>
+
 
 <style>
 * {
@@ -280,6 +356,7 @@ function BotonBatalla() {
 body {
   background-color: #f0f4f8;
   color: #333;
+  max-width: 100%;
 }
 
 .ContenedorPincipal {
@@ -288,10 +365,6 @@ body {
   padding: 20px;
 }
 
-h1, h2, h3 {
-  color: #333;
-  margin-bottom: 10px;
-}
 
 h1 {
   font-size: 2.5rem;
@@ -309,6 +382,7 @@ h3 {
 .BarraInfo {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  height: 90px;
   margin-top: 20px;
   padding: 10px 0;
   background-color: #ffffff;
@@ -316,27 +390,20 @@ h3 {
   border-radius: 10px;
 }
 
-.BarraInfo div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+
 
 .BarraInfo2 {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  height: 90px;
   margin-top: 20px;
-  gap: 10px;
 }
 
-.BarraInfo2 div {
-  display: flex;
-  justify-content: center;
+
+.block{
+  font-size: medium;
 }
 
-.BarraDP {
-  text-align: center;
-}
 
 .BTN1, .BTN2 {
   width: 200px;
@@ -347,20 +414,21 @@ h3 {
   margin: 10px 0;
 }
 
-.BTN1 {
-  background-color: #007bff;
-  color: #fff;
-}
-
-.BTN2 {
-  background-color: #28a745;
-  color: #fff;
-}
 
 .BarraInfo3 {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  margin-top: 20px;
+  grid-template-columns: 40% 20% 40%;
+  width: 58%;
+  margin-top: 3%;
+  margin-left: 20%;
+  position: absolute;
+  color: #f0f4f8;
+  border-radius:10px;
+  padding: 1%;
+  border: 1px solid white;
+  background: rgb(255,255,255);
+  background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(62,54,54,0.5355392156862745) 0%);
+
 }
 
 .nudo {
@@ -378,7 +446,6 @@ h3 {
   border: 5px solid black;
   border-radius: 15px;
   padding: 10px;
-  position: relative;
 }
 
 .poke1, .poke2 {
@@ -395,10 +462,18 @@ h3 {
 }
 
 
+.imgI{
+  width: 100px;
+  height: 100px;
+  margin-top:130% ;
+
+}
+
 .img1 {
-  width: 300px;
-  height: 300px;
-  margin-top: 30%;
+  width: 290px;
+  height: 290px;
+  margin-top: 20%;
+  margin-left: -30%;
 }
 
 .img2 {
@@ -411,35 +486,40 @@ h3 {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   text-align: center;
-  margin-top: 30px;
+  height: 5px;
+
 }
 
 .resultado {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
+  margin-top: -4.5%;
+  color:#ffffff;
+  background: rgb(255,255,255);
+  background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(62,54,54,0.5355392156862745) 0%);
+  width: 20%;
+  margin-left:40%;
+  border-radius: 10px;
+  border: #ffffff 1px solid;
+
 }
 
 
 .ContadorBatallas {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  text-align: center;
-  margin-top: 20px;
+  grid-template-columns: 1fr 2fr 1fr;
+  color: #f0f4f8;
+ 
 }
 
 .ContadorBatallas div {
   font-size: 1.5rem;
   font-weight: bold;
+  margin-top: 20px;
 }
 
-.BarraLateral {
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-}
-
-h2, h3 {
+h3 {
   color: #007bff;
 }
 
@@ -466,6 +546,34 @@ h3 {
   width: 200px;
   font-size: 1.1rem;
 }
+
+
+@media (max-width:426px){
+ 
+.BarraInfo2 {
+  display: grid;
+  grid-template-columns: 100%;
+}
+
+.img1 {
+  width: 200px;
+  height: 200px;
+  margin-top: 250%;
+}
+
+.img2 {
+  width: 150px;
+  height: 150px;
+  margin-top: 120%;
+}
+
+
+ 
+}
+
+
+
+
 
 
 
