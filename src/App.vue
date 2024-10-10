@@ -253,6 +253,7 @@ async function Batallar() {
   await Promise.all([AlaBatalla(pokemonId1), AlaBatalla2(pokemonId2)]);
   
   pokemonsBuscados.value = true; 
+  
 }
 
 function BotonBatalla() {
@@ -270,6 +271,8 @@ function BotonBatalla() {
   if (select.value) {
     JuegoIconos();
   }
+  pokemonsBuscados.value = false; 
+  pokemonsBuscados2.value = false; 
 }
 
 onMounted(() => {
@@ -426,7 +429,6 @@ h3 {
   color: #f0f4f8;
   border-radius:10px;
   padding: 1%;
-  border: 1px solid white;
   background: rgb(255,255,255);
   background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(62,54,54,0.5355392156862745) 0%);
 
@@ -463,11 +465,16 @@ h3 {
 }
 
 
+
+
 .imgI{
   width: 100px;
   height: 100px;
   margin-top:130% ;
 
+
+  border: none;
+  outline: none;
 }
 
 .img1 {
@@ -475,6 +482,9 @@ h3 {
   height: 290px;
   margin-top: 20%;
   margin-left: -30%;
+
+  border: none;
+  outline: none;
 }
 
 .img2 {
@@ -502,7 +512,6 @@ h3 {
   width: 20%;
   margin-left:40%;
   border-radius: 10px;
-  border: #ffffff 1px solid;
 
 }
 
